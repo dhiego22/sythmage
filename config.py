@@ -1,9 +1,8 @@
 from dataclasses import dataclass
-from pathlib import Path
 @dataclass
 class TrainConfig:
-    dir_3t:str=''
-    dir_7t:str=''
+    dir_base:str=''
+    dir_target:str=''
     epochs:int=100
     batch_size:int=1
     lr:float=2e-4
