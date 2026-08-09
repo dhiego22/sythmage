@@ -1,8 +1,9 @@
+from dataclasses import dataclass
+from typing import Tuple
+
 dir_base = ""
 dir_target = ""
 checkpoints_dir = 'checkpoints'
-
-from dataclasses import dataclass
 
 @dataclass
 class TrainConfig:
