@@ -65,3 +65,26 @@ Matplotlib
 Pandas
 
 ![alt text](icon.png)
+
+# SYTHMAGE v1.0
+
+## Installation
+```
+git clone https://github.com/dhiego22/sythmage
+cd sythmage
+pip install -r requirements.txt
+```
+
+## Training
+```
+python train train --config configs/train.yaml
+```
+
+## Inference
+```
+python infer \
+    --checkpoint checkpoints/che3ckpoint.pt \
+    --input /directory/with/nifty/files \
+    --output /output/directory
+```
+
