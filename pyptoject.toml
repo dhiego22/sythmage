@@ -1,0 +1,19 @@
+[project]
+name = "sythmage"
+version = "0.1.0"
+description = "3D Pix2Pix GAN for synthetic medical image generation"
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+    "torch",
+    "torchmetrics",
+    "numpy",
+    "pandas",
+    "nibabel",
+    "matplotlib"
+]
+
+[project.scripts]
+sythmage-train = "sythmage.cli:train_main"
+sythmage-infer = "sythmage.cli:infer_main"
