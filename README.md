@@ -56,14 +56,6 @@ Target Directory: Subject001_target.nii.gz, Subject001_target.nii.gz
 
 where base and target scans are spatially aligned and represent the same subject.
 
-Built With:
-PyTorch
-TorchMetrics
-NumPy
-NiBabel
-Matplotlib
-Pandas
-
 ![alt text](icon.png)
 
 # SYTHMAGE v1.0
@@ -77,7 +69,7 @@ pip install -r requirements.txt
 
 ## Training
 ```
-python train train --config configs/train.yaml
+python train --config configs/train.yaml
 ```
 
 ## Inference
