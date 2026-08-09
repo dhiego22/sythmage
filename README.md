@@ -27,9 +27,8 @@ Checkpoint saving and full-volume reconstruction pipeline
 Applications
 
 SYTHMAGE can be used for:
-Medical image translation
-Neuroimaging data harmonization
-Deep learning preprocessing pipelines
+3D data translation
+3D data harmonization
 Data augmentation
 
 Method Overview
