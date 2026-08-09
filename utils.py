@@ -1,3 +1,17 @@
+import torch
+import matplotlib.pyplot as plt
+import numpy as np
+import torch
+import random
+from torchmetrics.image import (
+    StructuralSimilarityIndexMeasure,
+    PeakSignalNoiseRatio,
+)
+from torchmetrics.image.fid import (
+    FrechetInceptionDistance,
+)
+
+
 def plot_metrics_over_epochs(*y_series, #*y_series (list of lists): One or more lists of metric values (e.g., loss, val_loss, accuracy)
                              labels=None, # labels (list of str, optional): Labels for each series. Length must match number of y_series
                              title="Training Metrics Over Epochs", # title (str): Plot title
