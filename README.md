@@ -46,10 +46,15 @@ Input Data
 The framework expects paired MRI datasets:
 
 Base directory:
+
 Subject001_base.nii.gz
+
 Subject002_base.nii.gz
+
 Target Directory
+
 Subject001_target.nii.gz
+
 Subject001_target.nii.gz
 
 
