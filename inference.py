@@ -178,3 +178,11 @@ def reconstruct(checkpoint_path: str,
         synth_img.header['descrip'] = 'pix2pix3D synthetic 7T-like (masked by 3T zeros)'
         nib.save(synth_img, out_path)
         print(f'[Saved] {out_path}')
+
+
+
+reconstruct(
+    checkpoint_path="checkpoints/ckpt.pt",
+    dir_base="data/directory",
+    out_dir="output/directory"
+)
