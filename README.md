@@ -1,3 +1,4 @@
+![alt text](icon.png)
 # SYTHMAGE
 SYnTHetic Medical imAge using GEnerative adversarial networks 
 
@@ -55,8 +56,6 @@ Base directory: Subject001_base.nii.gz, Subject002_base.nii.gz
 Target Directory: Subject001_target.nii.gz, Subject001_target.nii.gz
 
 where base and target scans are spatially aligned and represent the same subject.
-
-![alt text](icon.png)
 
 # SYTHMAGE v1.0
 
