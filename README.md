@@ -68,14 +68,17 @@ pip install -r requirements.txt
 
 ## Training
 ```
-python train --config configs/train.yaml
+python main.py train \
+    --dir-base /base/directory \
+    --dir-target /target/directory \
+    --epochs 10
 ```
 
 ## Inference
 ```
-python infer \
-    --checkpoint checkpoints/che3ckpoint.pt \
-    --input /directory/with/nifty/files \
+python main.py infer \
+    --checkpoint checkpoints/checkpoint.ckpt \
+    --input /data/directory \
     --output /output/directory
 ```
 
