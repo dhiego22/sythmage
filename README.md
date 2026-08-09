@@ -1,4 +1,4 @@
-
+![alt text](icon.png)
 # SYTHMAGE
 SYnTHetic Medical imAge using GEnerative adversarial networks 
 
