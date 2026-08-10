@@ -19,7 +19,7 @@ class PairedMRI3DPatches(Dataset):
         self.patches_per_volume = patches_per_volume
 
         def pairing_key(p:str) -> str:
-            return os.path.splitext(os.path.basename(p))[0][:4] # adapt this part to consider the paired files match
+            return os.path.splitext(os.path.basename(p))[0]
 
         map_3t, map_7t = {},  {}
         for p in files_3t:
