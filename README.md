@@ -74,7 +74,7 @@ python main.py train \
 
 ## Inference
 ```
-python main.py infer \
+python main.py reconstruct \
     --checkpoint checkpoints/checkpoint.pt \
     --in-dir /data/directory \
     --out-dir /output/directory
