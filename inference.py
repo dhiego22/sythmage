@@ -48,10 +48,7 @@ def infer_full_volume_patches(
     window_power=1.0,
     window_floor=1e-3,
 ) -> np.ndarray:
-    """Reconstruct synthetic volume using overlapping patches with windowed blending.
-    vol3: numpy array (H,W,D) normalized to [-1,1]
-    Returns numpy array (H,W,D) in [-1,1]
-    """
+
     H, W, D = vol3.shape
     ph, pw, pd = patch_size
     oh, ow, od = overlap
@@ -120,7 +117,7 @@ def infer_full_volume_patches(
 
 
 def reconstruct(checkpoint_path: str,
-                  dir_base: str,
+                  in_dir: str,
                   out_dir: str="",
                   patch_size=(64,64,64),
                   overlap=(32,32,32),
@@ -136,45 +133,35 @@ def reconstruct(checkpoint_path: str,
 
     os.makedirs(out_dir, exist_ok=True)
 
-    files_3t = sorted(glob.glob(os.path.join(dir_3t, '*.nii*')))
-    print(f'Found {len(files_3t)} 3T files in {dir_3t}')
+    files = sorted(glob.glob(os.path.join(in_dir, '*.nii*')))
+    print(f'Found {len(files)} files in {in_dir}')
 
-    for src3t_path in files_3t:
-        src_nii = nib.load(src3t_path)
-        vol3 = src_nii.get_fdata().astype(np.float32)
+    for src_path in files:
+        src_nii = nib.load(src_path)
+        vol = src_nii.get_fdata().astype(np.float32)
 
-        # ---- (1) Build mask from ORIGINAL 3T (unnormalized) ----
-        # exact zeros:
         if zero_eps == 0.0:
-            mask = (vol3 != 0).astype(np.float32)
+            mask = (vol != 0).astype(np.float32)
         else:
-            mask = (np.abs(vol3) > zero_eps).astype(np.float32)
+            mask = (np.abs(vol) > zero_eps).astype(np.float32)
 
-        # ---- (2) Your existing pipeline ----
-        vol3n = minmax_norm(vol3)
+        voln = minmax_norm(vol)
         synth_norm = infer_full_volume_patches(
-            netG, vol3n, device,
+            netG, voln, device,
             patch_size=patch_size,
             overlap=overlap
         )
+        
         synth_01 = (synth_norm + 1.0) / 2.0
-
-        # ---- (3) Apply mask AFTER reconstruction ----
-        # ensure shape compatibility
-        #if synth_01.shape != mask.shape:
-        #    raise ValueError(f"Shape mismatch: synth={synth_01.shape}, mask={mask.shape}")
-
         synth_01_masked = synth_01 * mask
-        #synth_01_masked = synth_01
 
-        # ---- (4) Save ----
-        base = os.path.basename(src3t_path)
+        base = os.path.basename(src_path)
         stem = base[:-7] if base.endswith('.nii.gz') else os.path.splitext(base)[0]
-        out_name = f'{stem}_synthetic_7T.nii.gz'
+        out_name = f'{stem}_synthetic.nii.gz'
         out_path = os.path.join(out_dir, out_name)
 
         synth_img = nib.Nifti1Image(synth_01_masked.astype(np.float32), src_nii.affine, src_nii.header)
         synth_img.header.set_data_dtype(np.float32)
-        synth_img.header['descrip'] = 'pix2pix3D synthetic 7T-like (masked by 3T zeros)'
+        synth_img.header['descrip'] = 'pix2pix3D synthetic (masked)'
         nib.save(synth_img, out_path)
         print(f'[Saved] {out_path}')
