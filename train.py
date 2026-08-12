@@ -52,15 +52,6 @@ def train(
    ssim_list = []
    fid_list = []
    
-   
-   def r1_penalty(d_out, x_in):
-       grad = torch.autograd.grad(
-           outputs=d_out.sum(), inputs=x_in,
-           create_graph=True, retain_graph=True, only_inputs=True
-       )[0]
-       return grad.pow(2).reshape(grad.shape[0], -1).sum(1).mean()
-   
-   
    # Start training loop
    for epoch in range(1, epochs+1):
        netG.train()
@@ -76,7 +67,7 @@ def train(
            src3t = src3t.to(device); tgt7t = tgt7t.to(device) 
    
            # Train Discriminator
-           optD.zero_grad(set_to_none=True)#??? clear discriminator gradients; set_to_none=True is slightly more efficient than zeroing
+           optD.zero_grad(set_to_none=True)
            with torch.amp.autocast('cuda', enabled=True):
                real_input = torch.cat([src3t, tgt7t], dim=1)
                real_input.requires_grad_(True)
