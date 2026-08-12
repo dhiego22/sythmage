@@ -1,18 +1,25 @@
 import os
 import numpy as np
+import random
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
-from .utils import r1_penalty, compute_fid_3D, save_checkpoint
-from .dataset import PairedMRI3DPatches
-from .models import (UNetGenerator3D, PatchDiscriminator3D)
+from torchmetrics.image import StructuralSimilarityIndexMeasure, PeakSignalNoiseRatio
+from torchmetrics.image.fid import FrechetInceptionDistance
+from utils import r1_penalty, compute_fid_3D, mse, plot_metrics_over_epochs, normalize
+from datasets import PairedMRI3DPatches
+from models import (UNetGenerator3D, PatchDiscriminator3D)
+
 
 def train(
    dir_base,
-   dir_base,
+   dir_target,
    epochs=10,
    batch_size=1,
    lr=2e-4,
+   lambda_r1=10,
+   patch_size = (64,64,64),
+   patches_per_volume = 32,
    save_dir="checkpoints"
 ):
    #Setup
@@ -53,7 +60,6 @@ def train(
        )[0]
        return grad.pow(2).reshape(grad.shape[0], -1).sum(1).mean()
    
-   lambda_r1 = 10.0
    
    # Start training loop
    for epoch in range(1, epochs+1):
@@ -90,7 +96,7 @@ def train(
                gen_7t = netG(src3t)
                pred_gen = netD(torch.cat([src3t, gen_7t], dim=1))
                g_adv = adv_criterion(pred_gen, torch.ones_like(pred_gen))
-               g_l1  = l1_criterion(gen_7t, tgt7t) * lambda_l1
+               g_l1  = l1_criterion(gen_7t, tgt7t) * lambda_r1
                g_loss = g_adv + g_l1
            scaler.scale(g_loss).backward(); scaler.step(optG); scaler.update()
            g_loss_sum += float(g_loss.item()); d_loss_sum += float(d_loss.item())
@@ -130,7 +136,7 @@ def train(
        print(f'Epoch={epoch} - avg_g={avg_g:.4f} - avg_d={avg_d:.4f} - fid={fid:.3f} - mse={avg_mse:.3f} - psnr={avg_psnr:.3f} - ssim={avg_ssim:.3f}')
       
    print('saving weights!') 
-   checkpoint_path = os.path.join(checkpoints_dir, f'gan3D_{epoch}.pt')
+   checkpoint_path = os.path.join(save_dir, f'gan3D_{epoch}.pt')
    torch.save({
        'epoch': best_epoch,
        'netG': best_netG,
