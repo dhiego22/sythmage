@@ -50,9 +50,9 @@ Input Data
 
 The framework expects paired MRI datasets:
 
-Base directory: Subject001_base.nii.gz, Subject002_base.nii.gz
+Base directory: Subject001.nii.gz, Subject002.nii.gz
 
-Target Directory: Subject001_target.nii.gz, Subject001_target.nii.gz
+Target Directory: Subject001.nii.gz, Subject002.nii.gz
 
 where base and target scans are spatially aligned and represent the same subject.
 
@@ -76,8 +76,8 @@ python main.py train \
 ## Inference
 ```
 python main.py infer \
-    --checkpoint checkpoints/checkpoint.ckpt \
-    --input /data/directory \
-    --output /output/directory
+    --checkpoint checkpoints/checkpoint.pt \
+    --in-dir /data/directory \
+    --out-dir /output/directory
 ```
 
