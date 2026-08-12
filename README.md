@@ -17,10 +17,9 @@ The framework is designed for neuroimaging researchers interested in image enhan
 - Sliding-window inference with overlap-aware weighted patch blending
 - Native NIfTI support through NiBabel
 - Integrated image quality metrics:
-- MSE (Mean Squared Error)
-- PSNR (Peak Signal-to-Noise Ratio)
-- SSIM (Structural Similarity Index)
-- FID (Fréchet Inception Distance)
+    -- MSE (Mean Squared Error)
+    -- PSNR (Peak Signal-to-Noise Ratio)
+    -- SSIM (Structural Similarity Index)
 - Checkpoint saving and full-volume reconstruction pipeline
 
 ## Applications
