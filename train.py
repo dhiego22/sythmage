@@ -127,7 +127,7 @@ def train(
        print(f'Epoch={epoch} - avg_g={avg_g:.4f} - avg_d={avg_d:.4f} - fid={fid:.3f} - mse={avg_mse:.3f} - psnr={avg_psnr:.3f} - ssim={avg_ssim:.3f}')
       
    print('saving weights!') 
-   checkpoint_path = os.path.join(save_dir, f'gan3D_{epoch}.pt')
+   checkpoint_path = os.path.join(save_dir, f'checkpoint_{epoch}.pt')
    torch.save({
        'epoch': best_epoch,
        'netG': best_netG,
