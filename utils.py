@@ -111,3 +111,17 @@ def compute_fid_3D(netG, loader, fid_metric, device, num_slices=8):
 
     return fid_metric.compute().item()
   
+def r1_penalty(d_out, x_in):
+    grad = torch.autograd.grad(
+        outputs=d_out.sum(), inputs=x_in,
+        create_graph=True, retain_graph=True, only_inputs=True
+    )[0]
+    return grad.pow(2).reshape(grad.shape[0], -1).sum(1).mean()
+
+def normalize(x):
+    min_x = min(x)
+    max_x = max(x)
+    # avoid division by zero if list has constant values
+    if max_x == min_x:
+        return [0.0 for _ in x]
+    return [(v - min_x) / (max_x - min_x) for v in x] 
