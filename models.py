@@ -1,3 +1,7 @@
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
 def Norm3d(num_channels, norm_type="instance", num_groups=8):
     if norm_type == "group":
         # Ensure num_groups divides num_channels; fallback to 4 or 1 if needed
