@@ -16,10 +16,7 @@ The framework is designed for neuroimaging researchers interested in image enhan
 - R1 gradient regularization for stable adversarial training
 - Sliding-window inference with overlap-aware weighted patch blending
 - Native NIfTI support through NiBabel
-- Integrated image quality metrics:
-    -- MSE (Mean Squared Error)
-    -- PSNR (Peak Signal-to-Noise Ratio)
-    -- SSIM (Structural Similarity Index)
+- Integrated image quality metrics: MSE (Mean Squared Error), PSNR (Peak Signal-to-Noise Ratio), SSIM (Structural Similarity Index)
 - Checkpoint saving and full-volume reconstruction pipeline
 
 ## Applications
