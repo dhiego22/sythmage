@@ -3,8 +3,8 @@ import glob
 import nibabel as nib
 import numpy as np
 import torch
-from .models import UNetGenerator3D
-from .utils import minmax_norm
+from models import UNetGenerator3D
+from utils import minmax_norm
 
 def make_3d_window(patch_size, kind='hamming', power=1.0, floor=1e-3):
     ph, pw, pd = patch_size
@@ -120,7 +120,7 @@ def infer_full_volume_patches(
 
 
 def reconstruct(checkpoint_path: str,
-                  dir_3t: str,
+                  dir_base: str,
                   out_dir: str="",
                   patch_size=(64,64,64),
                   overlap=(32,32,32),
@@ -178,11 +178,3 @@ def reconstruct(checkpoint_path: str,
         synth_img.header['descrip'] = 'pix2pix3D synthetic 7T-like (masked by 3T zeros)'
         nib.save(synth_img, out_path)
         print(f'[Saved] {out_path}')
-
-
-
-reconstruct(
-    checkpoint_path="checkpoints/ckpt.pt",
-    dir_base="data/directory",
-    out_dir="output/directory"
-)
