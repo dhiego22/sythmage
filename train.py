@@ -31,7 +31,7 @@ def train(
    
    # Get dataset
    train_ds = PairedMRI3DPatches(dir_base=dir_base, dir_target=dir_target, patch_size=patch_size, patches_per_volume=patches_per_volume) 
-   train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=1, pin_memory=True) # do we need to shuffle? best number of workers? pin_memory?
+   train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=1, pin_memory=True)
    
    # Get models and parameters
    netG = UNetGenerator3D(in_ch=1, out_ch=1).to(device)
