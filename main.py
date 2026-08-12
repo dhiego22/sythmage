@@ -23,12 +23,11 @@ def main()-> None:
 
     p_infer = sub.add_parser('reconstruct', help='Synthesize files and compute metrics')
     p_infer.add_argument('--checkpoint', required=True)
-    p_infer.add_argument('--dir-base', required=True)
+    p_infer.add_argument('--in-dir', required=True)
     p_infer.add_argument('--out-dir', required=True)
     p_infer.add_argument('--patch-size', type=int, nargs=3, default=[64,64,64])
     p_infer.add_argument('--overlap', type=int, nargs=3, default=[32,32,32])
-    p_infer.add_argument('--model', default = 'gan3D')
-    
+        
     
     args = parser.parse_args()
     if args.cmd == 'train':
@@ -48,11 +47,11 @@ def main()-> None:
     elif args.cmd == 'reconstruct':
         reconstruct(
             checkpoint_path=args.checkpoint,
-            dir_base=args.dir_base,
+            in_dir=args.in_dir,
             out_dir=args.out_dir,
             patch_size=tuple(args.patch_size),
             overlap=tuple(args.overlap),
-            model = args.model,
+            
         )
     else:
         print('ERROR')   
