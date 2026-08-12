@@ -6,7 +6,7 @@ SYTHMAGE is a PyTorch-based framework for generating synthetic 3D medical images
 
 The framework is designed for neuroimaging researchers interested in image enhancement, domain translation, and data augmentation. 
 
-Features
+## Features
 - Fully 3D Pix2Pix GAN architecture
 - U-Net-based generator with skip connections
 - 3D PatchGAN discriminator
@@ -23,21 +23,21 @@ Features
 - FID (Fréchet Inception Distance)
 - Checkpoint saving and full-volume reconstruction pipeline
 
-Applications
+## Applications
 
 SYTHMAGE can be used for:
 - 3D data translation
 - 3D data harmonization
 - Data augmentation
 
-Method Overview
+## Method Overview
 
 The model learns a voxel-level mapping, while a discriminator simultaneously learns to distinguish real volumes from generated volumes.
 
 Training minimizes a combination of which encourages both realistic image appearance and anatomical fidelity.
 Adversarial Loss + λ × L1 Reconstruction Loss
 
-Reconstruction Strategy
+## Reconstruction Strategy
 
 To generate complete synthetic volumes, SYTHMAGE:
 Extracts overlapping 3D patches from a scan.
@@ -45,7 +45,7 @@ Predicts corresponding synthetic patches.
 Blends overlapping predictions using a smooth Hamming/Gaussian weighting window.
 Reconstructs a seamless full-resolution synthetic volume.
 
-Input Data
+## Input Data
 
 The framework expects paired MRI datasets:
 
