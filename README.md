@@ -2,34 +2,33 @@
 # SYTHMAGE
 SYnTHetic Medical imAge using GEnerative adversarial networks 
 
-SYTHMAGE is a PyTorch-based framework for generating synthetic medical images using a fully 3D conditional Generative Adversarial Network (cGAN). The project implements a memory-efficient 3D Pix2Pix architecture  and supports patch-based training and sliding-window whole-volume reconstruction.
+SYTHMAGE is a PyTorch-based framework for generating synthetic 3D medical images using a fully 3D conditional Generative Adversarial Network (cGAN). The project implements a memory-efficient 3D Pix2Pix architecture  and supports patch-based training and sliding-window whole-volume reconstruction.
 
-The framework is designed for neuroimaging researchers interested in image enhancement, domain translation, and data harmonization. By learning the mapping between paired images, SYTHMAGE enables the generation of synthetic images from clinical scans.
+The framework is designed for neuroimaging researchers interested in image enhancement, domain translation, and data augmentation. 
 
 Features
-
-Fully 3D Pix2Pix GAN architecture
-U-Net-based generator with skip connections
-3D PatchGAN discriminator
-Patch-based training for memory-efficient processing of large MRI volumes
-Mixed precision training (AMP) for faster GPU execution
-Instance Normalization / Group Normalization support
-R1 gradient regularization for stable adversarial training
-Sliding-window inference with overlap-aware weighted patch blending
-Native NIfTI support through NiBabel
-Integrated image quality metrics:
-MSE (Mean Squared Error)
-PSNR (Peak Signal-to-Noise Ratio)
-SSIM (Structural Similarity Index)
-FID (Fréchet Inception Distance)
-Checkpoint saving and full-volume reconstruction pipeline
+- Fully 3D Pix2Pix GAN architecture
+- U-Net-based generator with skip connections
+- 3D PatchGAN discriminator
+- Patch-based training for memory-efficient processing of large MRI volumes
+- Mixed precision training (AMP) for faster GPU execution
+- Instance Normalization / Group Normalization support
+- R1 gradient regularization for stable adversarial training
+- Sliding-window inference with overlap-aware weighted patch blending
+- Native NIfTI support through NiBabel
+- Integrated image quality metrics:
+- MSE (Mean Squared Error)
+- PSNR (Peak Signal-to-Noise Ratio)
+- SSIM (Structural Similarity Index)
+- FID (Fréchet Inception Distance)
+- Checkpoint saving and full-volume reconstruction pipeline
 
 Applications
 
 SYTHMAGE can be used for:
-3D data translation
-3D data harmonization
-Data augmentation
+- 3D data translation
+- 3D data harmonization
+- Data augmentation
 
 Method Overview
 
