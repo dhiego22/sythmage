@@ -101,9 +101,9 @@ class UNetGenerator3D(nn.Module):
         )
 
         # Decoder (ConvTranspose3d -> interpolate+conv)
-        self.u1 = UpBlock3D(512, 256, dropout=False,  norm_type=norm_type, up_mode=up_mode)  # b -> 256
-        self.u2 = UpBlock3D(512, 128, dropout=False,  norm_type=norm_type, up_mode=up_mode)  # cat(u1,d3)=256+256=512 -> 128
-        self.u3 = UpBlock3D(256, 64,  dropout=False, norm_type=norm_type, up_mode=up_mode)  # cat(u2,d2)=128+128=256 -> 64
+        self.u1 = UpBlock3D(512, 256, dropout=False,  norm_type=norm_type, up_mode=up_mode) 
+        self.u2 = UpBlock3D(512, 128, dropout=False,  norm_type=norm_type, up_mode=up_mode) 
+        self.u3 = UpBlock3D(256, 64,  dropout=False, norm_type=norm_type, up_mode=up_mode)  
 
         # Final (cat(u3,d1)=64+64=128 -> out)
         self.u4 = FinalUp3D(128, out_ch, up_mode=up_mode, out_activation=out_activation)
