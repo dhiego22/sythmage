@@ -24,21 +24,6 @@ SYTHMAGE can be used for:
 - 3D data harmonization
 - Data augmentation
 
-## Method Overview
-
-The model learns a voxel-level mapping, while a discriminator simultaneously learns to distinguish real volumes from generated volumes.
-
-Training minimizes a combination of which encourages both realistic image appearance and anatomical fidelity.
-Adversarial Loss + λ × L1 Reconstruction Loss
-
-## Reconstruction Strategy
-
-To generate complete synthetic volumes, SYTHMAGE:
-Extracts overlapping 3D patches from a scan.
-Predicts corresponding synthetic patches.
-Blends overlapping predictions using a smooth Hamming/Gaussian weighting window.
-Reconstructs a seamless full-resolution synthetic volume.
-
 ## Input Data
 
 The framework expects paired MRI datasets:
