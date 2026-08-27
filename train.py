@@ -99,13 +99,13 @@ def train(
            scaler.scale(g_loss).backward(); scaler.step(optG); scaler.update()
            g_loss_sum += float(g_loss.item()); d_loss_sum += float(d_loss.item())
    
-      ssim = StructuralSimilarityIndexMeasure(data_range=2.0).to(device)
-      psnr = PeakSignalNoiseRatio(data_range=2.0).to(device)
+       ssim = StructuralSimilarityIndexMeasure(data_range=2.0).to(device)
+       psnr = PeakSignalNoiseRatio(data_range=2.0).to(device)
    
-      with torch.no_grad():
-          mse_sum += mse(gen_7t, tgt7t).item()
-          psnr_sum += psnr(gen_7t, tgt7t).item()
-          ssim_sum += ssim(gen_7t, tgt7t).item()
+       with torch.no_grad():
+           mse_sum += mse(gen_7t, tgt7t).item()
+           psnr_sum += psnr(gen_7t, tgt7t).item()
+           ssim_sum += ssim(gen_7t, tgt7t).item()
                        
        # epoch averages
        avg_mse = mse_sum / len(train_loader)
@@ -132,16 +132,17 @@ def train(
        best_netG = netG.state_dict()
        best_netD = netD.state_dict()
        print(f'Epoch={epoch} - avg_g={avg_g:.4f} - avg_d={avg_d:.4f} - fid={fid:.3f} - mse={avg_mse:.3f} - psnr={avg_psnr:.3f} - ssim={avg_ssim:.3f}')
-      
-   print('saving weights!') 
-   checkpoint_path = os.path.join(save_dir, f'checkpoint_{epoch}.pt')
-   torch.save({
-       'epoch': best_epoch,
-       'netG': best_netG,
-       'netD': best_netD,
-       'optG': optG.state_dict(),
-       'optD': optD.state_dict(),
-   }, checkpoint_path)
+   
+      if epoch % 10 == 0: 
+         print('saving weights!') 
+         checkpoint_path = os.path.join(save_dir, f'checkpoint_{epoch}.pt')
+         torch.save({
+             'epoch': best_epoch,
+             'netG': best_netG,
+             'netD': best_netD,
+             'optG': optG.state_dict(),
+             'optD': optD.state_dict(),
+         }, checkpoint_path)
    
    plot_metrics_over_epochs(normalize(generator_loss_list), 
                            normalize(discriminator_loss_list),
