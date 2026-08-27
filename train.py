@@ -73,13 +73,7 @@ def train(
                real_input = torch.cat([src3t, tgt7t], dim=1)
                real_input.requires_grad_(True)
                pred_real = netD(real_input)
-               
-              # StyleGAN trick
-               if i % 16 == 0:
-                   r1 = r1_penalty(pred_real, real_input)
-               else:
-                   r1 = 0
-                  
+               r1 = r1_penalty(pred_real, real_input)
                d_loss_real = adv_criterion(pred_real, torch.ones_like(pred_real))
                fake_7t = netG(src3t).detach()
                fake_input = torch.cat([src3t, fake_7t], dim=1)
