@@ -15,7 +15,7 @@ def train(
    dir_base,
    dir_target,
    epochs=10,
-   batch_size=1,
+   batch_size=4,
    lr=2e-4,
    lambda_r1=10,
    patch_size = (64,64,64),
@@ -31,7 +31,7 @@ def train(
    
    # Get dataset
    train_ds = PairedMRI3DPatches(dir_base=dir_base, dir_target=dir_target, patch_size=patch_size, patches_per_volume=patches_per_volume) 
-   train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=1, pin_memory=True)
+   train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
    
    # Get models and parameters
    netG = UNetGenerator3D(in_ch=1, out_ch=1).to(device)
@@ -64,7 +64,8 @@ def train(
        ssim_sum = 0.0
        
        for i, (src3t, tgt7t) in enumerate(train_loader):
-           src3t = src3t.to(device); tgt7t = tgt7t.to(device) 
+           src3t = src3t.to(device, non_blocking=True)
+           tgt7t = tgt7t.to(device, non_blocking=True) 
    
            # Train Discriminator
            optD.zero_grad(set_to_none=True)
@@ -72,7 +73,13 @@ def train(
                real_input = torch.cat([src3t, tgt7t], dim=1)
                real_input.requires_grad_(True)
                pred_real = netD(real_input)
-               r1 = r1_penalty(pred_real, real_input)
+               
+              # StyleGAN trick
+               if i % 16 == 0:
+                   r1 = r1_penalty(pred_real, real_input)
+               else:
+                   r1 = 0
+                  
                d_loss_real = adv_criterion(pred_real, torch.ones_like(pred_real))
                fake_7t = netG(src3t).detach()
                fake_input = torch.cat([src3t, fake_7t], dim=1)
@@ -92,13 +99,13 @@ def train(
            scaler.scale(g_loss).backward(); scaler.step(optG); scaler.update()
            g_loss_sum += float(g_loss.item()); d_loss_sum += float(d_loss.item())
    
-           ssim = StructuralSimilarityIndexMeasure(data_range=2.0).to(device)
-           psnr = PeakSignalNoiseRatio(data_range=2.0).to(device)
+      ssim = StructuralSimilarityIndexMeasure(data_range=2.0).to(device)
+      psnr = PeakSignalNoiseRatio(data_range=2.0).to(device)
    
-           with torch.no_grad():
-               mse_sum += mse(gen_7t, tgt7t).item()
-               psnr_sum += psnr(gen_7t, tgt7t).item()
-               ssim_sum += ssim(gen_7t, tgt7t).item()
+      with torch.no_grad():
+          mse_sum += mse(gen_7t, tgt7t).item()
+          psnr_sum += psnr(gen_7t, tgt7t).item()
+          ssim_sum += ssim(gen_7t, tgt7t).item()
                        
        # epoch averages
        avg_mse = mse_sum / len(train_loader)
