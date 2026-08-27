@@ -29,7 +29,7 @@ class UpBlock3D(nn.Module):  # DECODER
         super().__init__()
         self.up_mode = up_mode  # "nearest" or "trilinear"
         self.blur = blur
-        if blur:
+        if self.blur:
             self.blur_conv = nn.Conv3d(in_ch, in_ch, kernel_size=3, stride=1, padding=1,
                                        groups=in_ch, bias=False)
             with torch.no_grad():
