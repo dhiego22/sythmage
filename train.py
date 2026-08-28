@@ -137,13 +137,21 @@ def train(
              'optG': optG.state_dict(),
              'optD': optD.state_dict(),
          }, checkpoint_path)
-   
-   plot_metrics_over_epochs(normalize(generator_loss_list), 
-                           normalize(discriminator_loss_list),
-                           normalize(mse_list),
-                           normalize(psnr_list),
-                           normalize(ssim_list),
-                           normalize(fid_list),
+
+   def normalize_metrics(x):
+       mean_x = sum(x) / len(x)
+       variance = sum((v - mean_x) ** 2 for v in x) / len(x)
+       std_x = variance ** 0.5
+       # avoid division by zero if all values are identical
+       if std_x == 0:
+           return [0.0 for _ in x]
+       return [(v - mean_x) / std_x for v in x]
+   plot_metrics_over_epochs(normalize_metrics(generator_loss_list), 
+                           normalize_metrics(discriminator_loss_list),
+                           normalize_metrics(mse_list),
+                           normalize_metrics(psnr_list),
+                           normalize_metrics(ssim_list),
+                           normalize_metrics(fid_list),
                            labels=['Generator Loss', 'Discriminator Loss', 'MSE', 'PSNR', 'SSIM', 'FID'], 
                            title="Training Metrics Over Epochs (Normalized)",
                            y_label="Metrics Scores", 
