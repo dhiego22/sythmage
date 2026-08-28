@@ -1,15 +1,7 @@
 import torch
 import matplotlib.pyplot as plt
 import numpy as np
-import torch
-import random
-from torchmetrics.image import (
-    StructuralSimilarityIndexMeasure,
-    PeakSignalNoiseRatio,
-)
-from torchmetrics.image.fid import (
-    FrechetInceptionDistance,
-)
+import torch.nn.functional as F
 
 
 def plot_metrics_over_epochs(*y_series, #*y_series (list of lists): One or more lists of metric values (e.g., loss, val_loss, accuracy)
@@ -31,7 +23,7 @@ def plot_metrics_over_epochs(*y_series, #*y_series (list of lists): One or more 
         raise ValueError(f"All series must have the same length, got lengths: {lengths}")
 
     n_points = lengths[0]
-    epochs = list(range(start_epoch, start_epoch + n_points * epoch_step, epoch_step))
+    epochs = np.arange(start_epoch, start_epoch + n_points * epoch_step, epoch_step)
 
     # Validate labels and styles
     if labels is not None and len(labels) != len(y_series):
@@ -60,68 +52,27 @@ def plot_metrics_over_epochs(*y_series, #*y_series (list of lists): One or more 
     plt.tight_layout()
 
     if save_path:
-        #os.makedirs(save_path, exist_ok=True)
+        os.makedirs(save_path, exist_ok=True)
         plt.savefig(save_path, dpi=150)
     if show:
         plt.show()
+    plt.close()
 
-def minmax_norm(arr: np.ndarray) -> np.ndarray: #min–max normalize each volume to range [-1, 1]
-    amin, amax = float(arr.min()), float(arr.max())
-    if amax <= amin:
+def znorm(arr: np.ndarray) -> np.ndarray:
+    mean = float(arr.mean())
+    std = float(arr.std())
+    if std <= 0:
         return np.zeros_like(arr, dtype=np.float32)
-    norm = (arr - amin) / (amax - amin)
-    return norm.astype(np.float32) * 2.0 - 1.0
+    norm = (arr - mean) / std
+    norm = np.clip(norm, -3.0, 3.0) / 3.0
+    return norm.astype(np.float32)
 
 def mse(x, y):
-    return torch.mean((x - y) ** 2)
-
-@torch.no_grad()
-def compute_fid_3D(netG, loader, fid_metric, device, num_slices=8):
-    """
-    Computes FID for 3D MRI patches by slicing them into 2D images.
-    TorchMetrics FID works only on 2D (HxW), so we extract slices from D dimension.
-    """
-    netG.eval()
-    fid_metric.reset()
-
-    for src3t, tgt7t in loader:
-        src3t = src3t.to(device)
-        tgt7t = tgt7t.to(device)
-
-        fake7t = netG(src3t)
-
-        B, C, D, H, W = tgt7t.shape
-
-        # pick slices evenly from the depth dimension
-        slice_idxs = torch.linspace(0, D - 1, num_slices).long()
-
-        for idx in slice_idxs:
-            real_slice = tgt7t[:, :, idx, :, :]    # shape: [B, 1, H, W]
-            fake_slice = fake7t[:, :, idx, :, :]   # shape: [B, 1, H, W]
-
-            # convert [-1,1] → uint8 [0,255]
-            real_uint8 = ((real_slice.clamp(-1,1) + 1) * 127.5).to(torch.uint8)
-            fake_uint8 = ((fake_slice.clamp(-1,1) + 1) * 127.5).to(torch.uint8)
-
-        real_rgb = real_uint8.repeat(1, 3, 1, 1)
-        fake_rgb = fake_uint8.repeat(1, 3, 1, 1)
-
-        fid_metric.update(real_rgb, real=True)
-        fid_metric.update(fake_rgb, real=False)
-
-    return fid_metric.compute().item()
-  
+    return F.mse_loss(x, y)
+ 
 def r1_penalty(d_out, x_in):
     grad = torch.autograd.grad(
         outputs=d_out.sum(), inputs=x_in,
         create_graph=True, retain_graph=True, only_inputs=True
     )[0]
     return grad.pow(2).reshape(grad.shape[0], -1).sum(1).mean()
-
-def normalize(x):
-    min_x = min(x)
-    max_x = max(x)
-    # avoid division by zero if list has constant values
-    if max_x == min_x:
-        return [0.0 for _ in x]
-    return [(v - min_x) / (max_x - min_x) for v in x] 
