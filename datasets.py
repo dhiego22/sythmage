@@ -102,8 +102,8 @@ class PairedMRI3DPatches(Dataset):
             vb = np.asarray(img_b.dataobj, dtype=np.float32)
             vt = np.asarray(img_t.dataobj, dtype=np.float32)
 
-            vb = minmax_norm(vb)
-            vt = minmax_norm(vt)
+            vb = znorm(vb)
+            vt = znorm(vt)
 
             self.cache_base[idx_pair] = vb
             self.cache_target[idx_pair] = vt
