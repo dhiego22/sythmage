@@ -52,7 +52,6 @@ def plot_metrics_over_epochs(*y_series, #*y_series (list of lists): One or more 
     plt.tight_layout()
 
     if save_path:
-        os.makedirs(save_path, exist_ok=True)
         plt.savefig(save_path, dpi=150)
     if show:
         plt.show()
