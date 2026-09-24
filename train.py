@@ -127,16 +127,16 @@ def train(
        best_netD = netD.state_dict()
        print(f'Epoch={epoch} - avg_g={avg_g:.4f} - avg_d={avg_d:.4f} - fid={fid:.3f} - mse={avg_mse:.3f} - psnr={avg_psnr:.3f} - ssim={avg_ssim:.3f}')
    
-      if epoch % 10 == 0: 
-         print('saving weights!') 
-         checkpoint_path = os.path.join(save_dir, f'checkpoint_{epoch}.pt')
-         torch.save({
+       if epoch % 10 == 0:
+          print('saving weights!') 
+          checkpoint_path = os.path.join(save_dir, f'checkpoint_{epoch}.pt')
+          torch.save({
              'epoch': best_epoch,
              'netG': best_netG,
              'netD': best_netD,
              'optG': optG.state_dict(),
              'optD': optD.state_dict(),
-         }, checkpoint_path)
+          }, checkpoint_path)
 
    def normalize_metrics(x):
        mean_x = sum(x) / len(x)
