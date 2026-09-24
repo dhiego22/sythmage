@@ -5,7 +5,7 @@ import nibabel as nib
 import numpy as np
 import torch
 from torch.utils.data import Dataset
-from utils import minmax_norm
+from utils import znorm
 
 class PairedMRI3DPatches(Dataset):
     def __init__(
