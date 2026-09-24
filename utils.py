@@ -76,3 +76,39 @@ def r1_penalty(d_out, x_in):
         create_graph=True, retain_graph=True, only_inputs=True
     )[0]
     return grad.pow(2).reshape(grad.shape[0], -1).sum(1).mean()
+
+@torch.no_grad()
+def compute_fid_3D(netG, loader, fid_metric, device, num_slices=8):
+    """
+    Computes FID for 3D MRI patches by slicing them into 2D images.
+    TorchMetrics FID works only on 2D (HxW), so we extract slices from D dimension.
+    """
+    netG.eval()
+    fid_metric.reset()
+
+    for src3t, tgt7t in loader:
+        src3t = src3t.to(device)
+        tgt7t = tgt7t.to(device)
+
+        fake7t = netG(src3t)
+
+        B, C, D, H, W = tgt7t.shape
+
+        # pick slices evenly from the depth dimension
+        slice_idxs = torch.linspace(0, D - 1, num_slices).long()
+
+        for idx in slice_idxs:
+            real_slice = tgt7t[:, :, idx, :, :]    # shape: [B, 1, H, W]
+            fake_slice = fake7t[:, :, idx, :, :]   # shape: [B, 1, H, W]
+
+            # convert [-1,1] → uint8 [0,255]
+            real_uint8 = ((real_slice.clamp(-1,1) + 1) * 127.5).to(torch.uint8)
+            fake_uint8 = ((fake_slice.clamp(-1,1) + 1) * 127.5).to(torch.uint8)
+
+        real_rgb = real_uint8.repeat(1, 3, 1, 1)
+        fake_rgb = fake_uint8.repeat(1, 3, 1, 1)
+
+        fid_metric.update(real_rgb, real=True)
+        fid_metric.update(fake_rgb, real=False)
+
+    return fid_metric.compute().item()
