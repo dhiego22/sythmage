@@ -145,7 +145,7 @@ def reconstruct(checkpoint_path: str,
         else:
             mask = (np.abs(vol) > zero_eps).astype(np.float32)
 
-        voln = minmax_norm(vol)
+        voln = znorm(vol)
         synth_norm = infer_full_volume_patches(
             netG, voln, device,
             patch_size=patch_size,
