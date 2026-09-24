@@ -6,7 +6,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from torchmetrics.image import StructuralSimilarityIndexMeasure, PeakSignalNoiseRatio
 from torchmetrics.image.fid import FrechetInceptionDistance
-from utils import r1_penalty, compute_fid_3D, mse, plot_metrics_over_epochs, normalize
+from utils import r1_penalty, compute_fid_3D, mse, plot_metrics_over_epochs
 from datasets import PairedMRI3DPatches
 from models import (UNetGenerator3D, PatchDiscriminator3D)
 
